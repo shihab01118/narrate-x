@@ -23,11 +23,16 @@ export default {
       '5xl': '50px'
     },
 
+    fontFamily: {
+      inter: '"Inter", sans-serif',
+      gelasio: '"Gelasio", serif'
+    },
+
     extend: {
-      fontFamily: {
-        inter: ["'Inter'", 'sans-serif'],
-        gelasio: ["'Gelasio'", 'serif']
-      }
+      // fontFamily: {
+      //   inter: ["'Inter'", 'sans-serif'],
+      //   gelasio: ["'Gelasio'", 'serif']
+      // }
     }
   },
   plugins: []
