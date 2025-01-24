@@ -4,9 +4,7 @@ export const connectDB = async () => {
   try {
     const connectionString = await mongoose.connect(process.env.MONGO_URI, {
       dbName: 'narrate-x',
-      usenewUrlParser: true,
-      useUnifiedTopology: true,
-      autoIndex: true,
+      autoIndex: true
     });
     console.log(`Connected to MongoDB: ${connectionString.connection.host}`);
   } catch (error) {
