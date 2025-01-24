@@ -1,12 +1,19 @@
 import { Outlet } from 'react-router-dom';
+import { SnackbarProvider } from 'notistack';
+
+// components
 import Navbar from './components/Navbar';
 
 function App() {
   return (
-    <>
+    <SnackbarProvider
+      autoHideDuration={3000}
+      preventDuplicate
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+    >
       <Navbar />
       <Outlet />
-    </>
+    </SnackbarProvider>
   );
 }
 
