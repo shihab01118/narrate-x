@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import App from '../App';
 import SignUp from '../pages/SignUp';
 import SignIn from '../pages/SignIn';
+import RedirectAuthenticatedUser from './RedirectAuthenticatedUser';
 
 const router = createBrowserRouter([
   {
@@ -10,11 +11,19 @@ const router = createBrowserRouter([
     children: [
       {
         path: 'sign-in',
-        element: <SignIn />
+        element: (
+          <RedirectAuthenticatedUser>
+            <SignIn />
+          </RedirectAuthenticatedUser>
+        )
       },
       {
         path: 'sign-up',
-        element: <SignUp />
+        element: (
+          <RedirectAuthenticatedUser>
+            <SignUp />
+          </RedirectAuthenticatedUser>
+        )
       }
     ]
   }

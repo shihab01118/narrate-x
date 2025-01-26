@@ -8,10 +8,11 @@ import InputBox from '../components/InputBox';
 
 // hooks
 import useAxiosPublic from '../hooks/useAxiosPublic';
+import useAuth from '../hooks/useAuth';
+import { storeInSession } from '../common/Session';
 
 // images
 import GoogleIcon from '../assets/google.png';
-import { storeInSession } from '../common/Session';
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
@@ -20,6 +21,7 @@ const SignIn = () => {
   });
 
   const axiosPublic = useAxiosPublic();
+  const { setUser } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,7 +46,8 @@ const SignIn = () => {
 
       if (data?.success) {
         storeInSession('user', JSON.stringify(data?.user));
-        console.log(sessionStorage);
+        setUser(data?.user);
+        enqueueSnackbar('Login successful!', { variant: 'success' });
       }
     } catch (error) {
       console.log('Error in signing up: ', error.message);
