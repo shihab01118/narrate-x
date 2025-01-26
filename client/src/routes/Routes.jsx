@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import App from '../App';
-import UserAuthForm from '../components/UserAuthForm';
+import SignUp from '../pages/SignUp';
+import SignIn from '../pages/SignIn';
 
 const router = createBrowserRouter([
   {
@@ -9,11 +10,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: 'sign-in',
-        element: <UserAuthForm type='sign-in' />
+        element: <SignIn />
       },
       {
         path: 'sign-up',
-        element: <UserAuthForm type='sign-up' />
+        element: <SignUp />
       }
     ]
   }

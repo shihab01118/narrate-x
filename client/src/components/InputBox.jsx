@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 
-const InputBox = ({ name, type, id, value, placeholder, icon }) => {
+const InputBox = ({ name, type, id, value, placeholder, icon, onChange }) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   return (
@@ -14,6 +14,7 @@ const InputBox = ({ name, type, id, value, placeholder, icon }) => {
         id={id}
         defaultValue={value}
         placeholder={placeholder}
+        onChange={onChange}
         className='input-box'
       />
       <i className={`fi ${icon} input-icon`}></i>
@@ -38,7 +39,8 @@ InputBox.propTypes = {
   id: PropTypes.string,
   value: PropTypes.string,
   placeholder: PropTypes.string,
-  icon: PropTypes.string
+  icon: PropTypes.string,
+  onChange: PropTypes.func
 };
 
 export default InputBox;

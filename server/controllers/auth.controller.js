@@ -11,21 +11,21 @@ export const signUp = async (req, res) => {
   if (fullname.length < 3) {
     return res.status(400).json({
       success: false,
-      message: 'Fullname must be at least 3 characters long'
+      message: 'Fullname must be at least 3 characters long!'
     });
   }
 
   if (!email.length) {
     return res.status(400).json({
       success: false,
-      message: 'Email is required'
+      message: 'Email is required!'
     });
   }
 
   if (!emailRegex.test(email)) {
     return res.status(400).json({
       success: false,
-      message: 'Email is invalid'
+      message: 'Email is invalid!'
     });
   }
 
@@ -33,7 +33,7 @@ export const signUp = async (req, res) => {
     return res.status(400).json({
       success: false,
       message:
-        'Password should be 6 to 20 characters long with a numeric, uppercase and lowercase letter'
+        'Password should be 6 to 20 characters long with a numeric, uppercase and lowercase letter!'
     });
   }
 
@@ -53,14 +53,14 @@ export const signUp = async (req, res) => {
     const savedUser = await user.save();
     return res.status(201).json({
       success: true,
-      message: 'User created successfully',
+      message: 'User created successfully!',
       user: formatUserDataToSend(savedUser)
     });
   } catch (error) {
     if (error.code === 11000) {
       return res.status(400).json({
         success: false,
-        message: 'Email already exists'
+        message: 'Email already exists!'
       });
     }
     return res.status(500).json({
@@ -78,7 +78,7 @@ export const SignIn = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'User not found'
+        message: 'User not found!'
       });
     }
 
