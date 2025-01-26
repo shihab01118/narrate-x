@@ -5,7 +5,7 @@ import useAuth from '../hooks/useAuth';
 const RedirectAuthenticatedUser = ({ children }) => {
   const { user } = useAuth();
 
-  if (user.token) {
+  if (user?.token) {
     return <Navigate to='/' replace={true} />;
   }
 

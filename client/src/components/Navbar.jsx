@@ -1,11 +1,16 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 
 // images
 import logo from '../assets/logo.png';
-import { useState } from 'react';
+import UserNavigationPanel from './UserNavigationPanel';
 
 const Navbar = () => {
   const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
+  const [userNavPanelVisible, setUserNavPanelVisible] = useState(false);
+
+  const { user } = useAuth();
 
   return (
     <nav className='navbar'>
@@ -36,7 +41,7 @@ const Navbar = () => {
           className='md:hidden bg-grey w-12 h-12 rounded-full flex items-center justify-center'
           onClick={() => setSearchBoxVisibility(!searchBoxVisibility)}
         >
-          <i className='fi fi-rr-search text-xl'></i>
+          <i className='fi fi-rr-search text-xl mt-1'></i>
         </button>
 
         {/* write button */}
@@ -48,15 +53,47 @@ const Navbar = () => {
           <p className='text-xl'>Write</p>
         </Link>
 
-        {/* sign-in button */}
-        <Link to='/sign-in' className='btn-dark py-2'>
-          Sign In
-        </Link>
+        {user?.token ? (
+          <>
+            {/* notification button */}
+            <Link to='/dashboard/notification'>
+              <button className='size-12 rounded-full bg-grey relative hover:bg-black/10 flex justify-center items-center'>
+                <i className='fi fi-rs-bell text-xl mt-1'></i>
+              </button>
+            </Link>
 
-        {/* sign up button */}
-        <Link to='/sign-up' className='btn-light py-2 hidden md:block'>
-          Sign Up
-        </Link>
+            {/* profile button */}
+            <div
+              className='relative'
+              onClick={() => setUserNavPanelVisible(!userNavPanelVisible)}
+              onBlur={() => {
+                setTimeout(() => setUserNavPanelVisible(false), 200);
+              }}
+            >
+              <button className='size-12 mt-1'>
+                <img
+                  src={user?.profile_img}
+                  alt='avatar'
+                  className='w-full h-full object-cover rounded-full'
+                />
+              </button>
+
+              {userNavPanelVisible && <UserNavigationPanel />}
+            </div>
+          </>
+        ) : (
+          <>
+            {/* sign-in button */}
+            <Link to='/sign-in' className='btn-dark py-2'>
+              Sign In
+            </Link>
+
+            {/* sign up button */}
+            <Link to='/sign-up' className='btn-light py-2 hidden md:block'>
+              Sign Up
+            </Link>
+          </>
+        )}
       </div>
     </nav>
   );

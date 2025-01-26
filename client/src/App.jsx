@@ -9,7 +9,7 @@ function App() {
     <SnackbarProvider
       autoHideDuration={3000}
       preventDuplicate
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
     >
       <Navbar />
       <Outlet />
