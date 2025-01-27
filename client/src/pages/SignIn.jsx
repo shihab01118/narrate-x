@@ -13,6 +13,7 @@ import { storeInSession } from '../common/Session';
 
 // images
 import GoogleIcon from '../assets/google.png';
+import { SignInWithGoogle } from '../firebase/firebase.config';
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
@@ -51,6 +52,18 @@ const SignIn = () => {
       }
     } catch (error) {
       console.log('Error in signing up: ', error.message);
+    }
+  };
+
+  const handleGoogleSignIn = async (e) => {
+    e.preventDefault();
+
+    try {
+      const user = await SignInWithGoogle();
+      console.log(user);
+    } catch (error) {
+      enqueueSnackbar('Google sign in failed!', { variant: 'error' });
+      return console.log('Error in handle google sign in: ', error);
     }
   };
 
@@ -94,7 +107,8 @@ const SignIn = () => {
             <hr className='w-1/2 border-black' />
           </div>
 
-          <button className='btn-dark flex items-center justify-center gap-4 w-[90%] center'>
+          <button className='btn-dark flex items-center justify-center gap-4 w-[90%] center'
+          onClick={handleGoogleSignIn}>
             <img src={GoogleIcon} alt='google-icon' className='w-5' />
             Continue with Google
           </button>
