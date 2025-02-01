@@ -5,15 +5,12 @@ import { enqueueSnackbar } from 'notistack';
 // components
 import AnimationWrapper from '../common/AnimationWrapper';
 import InputBox from '../components/InputBox';
+import GoogleAuthButton from '../components/GoogleAuthButton';
 
 // hooks
 import useAxiosPublic from '../hooks/useAxiosPublic';
 import useAuth from '../hooks/useAuth';
 import { storeInSession } from '../common/Session';
-
-// images
-import GoogleIcon from '../assets/google.png';
-import { SignInWithGoogle } from '../firebase/firebase.config';
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
@@ -48,22 +45,17 @@ const SignIn = () => {
       if (data?.success) {
         storeInSession('user', JSON.stringify(data?.user));
         setUser(data?.user);
-        enqueueSnackbar('Login successful!', { variant: 'success' });
+        enqueueSnackbar(data?.message, { variant: 'success' });
       }
+      
     } catch (error) {
-      console.log('Error in signing up: ', error.message);
-    }
-  };
-
-  const handleGoogleSignIn = async (e) => {
-    e.preventDefault();
-
-    try {
-      const user = await SignInWithGoogle();
-      console.log(user);
-    } catch (error) {
-      enqueueSnackbar('Google sign in failed!', { variant: 'error' });
-      return console.log('Error in handle google sign in: ', error);
+      console.log('Error in signing in: ', error);
+      if (error?.status === 400 || error?.status === 404) {
+        return enqueueSnackbar(error?.response?.data?.message, {
+          variant: 'error'
+        });
+      }
+      return enqueueSnackbar('Sign in failed!', { variant: 'error' });
     }
   };
 
@@ -107,11 +99,7 @@ const SignIn = () => {
             <hr className='w-1/2 border-black' />
           </div>
 
-          <button className='btn-dark flex items-center justify-center gap-4 w-[90%] center'
-          onClick={handleGoogleSignIn}>
-            <img src={GoogleIcon} alt='google-icon' className='w-5' />
-            Continue with Google
-          </button>
+          <GoogleAuthButton />
 
           <p className='text-center mt-6 text-dark-grey text-xl'>
             Don&apos;t have an account?{' '}

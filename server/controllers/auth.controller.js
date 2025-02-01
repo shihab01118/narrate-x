@@ -1,4 +1,7 @@
 import bcrypt from 'bcrypt';
+import admin from '../utils/firebase.js';
+import { getAuth } from 'firebase-admin/auth';
+
 import User from '../models/User.js';
 import { formatUserDataToSend, generateUsername } from '../utils/index.js';
 
@@ -53,7 +56,7 @@ export const signUp = async (req, res) => {
     const savedUser = await user.save();
     return res.status(201).json({
       success: true,
-      message: 'User created successfully!',
+      message: 'Signup successful!',
       user: formatUserDataToSend(savedUser)
     });
   } catch (error) {
@@ -82,8 +85,18 @@ export const SignIn = async (req, res) => {
       });
     }
 
+    if (user.google_auth) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email registered with Google. Use Google login.'
+      });
+    }
+
     // validate password
-    const isPasswordValid = await bcrypt.compare(password, user.personal_info.password);
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      user.personal_info.password
+    );
     if (!isPasswordValid) {
       return res
         .status(400)
@@ -92,13 +105,65 @@ export const SignIn = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: 'User found successfully!',
+      message: 'Login successful!',
       user: formatUserDataToSend(user)
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
       message: error.message
+    });
+  }
+};
+
+export const signInWithGoogle = async (req, res) => {
+  try {
+    const { token } = req.body;
+    if (!token)
+      return res
+        .status(400)
+        .json({ success: false, message: 'Access token is required' });
+
+    const decodedUser = await getAuth().verifyIdToken(token);
+    const { email, name, picture } = decodedUser;
+    const profileImg = picture.replace('s96-c', 's384-c');
+
+    let user =
+      (await User.findOne({ 'personal_info.email': email }).select(
+        'personal_info.fullname personal_info.email personal_info.profile_img google_auth'
+      )) || null;
+
+    if (user) {
+      if (!user.google_auth) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email registered without Google. Use password login.'
+        });
+      }
+    } else {
+      const username = await generateUsername(email);
+      user = new User({
+        personal_info: {
+          fullname: name,
+          email,
+          username
+        },
+        google_auth: true
+      });
+
+      await user.save();
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Google login successful!',
+      user: formatUserDataToSend(user)
+    });
+  } catch (error) {
+    console.error('Google authentication error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Google authentication failed. Try again.'
     });
   }
 };

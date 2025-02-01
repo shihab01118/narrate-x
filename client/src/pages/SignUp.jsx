@@ -5,13 +5,12 @@ import { enqueueSnackbar } from 'notistack';
 // components
 import AnimationWrapper from '../common/AnimationWrapper';
 import InputBox from '../components/InputBox';
+import GoogleAuthButton from '../components/GoogleAuthButton';
 
 // hooks
 import useAxiosPublic from '../hooks/useAxiosPublic';
-
-// images
-import GoogleIcon from '../assets/google.png';
 import { storeInSession } from '../common/Session';
+import useAuth from '../hooks/useAuth';
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -21,6 +20,7 @@ const SignUp = () => {
   });
 
   const axiosPublic = useAxiosPublic();
+  const {setUser} = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -65,10 +65,17 @@ const SignUp = () => {
 
       if (data?.success) {
         storeInSession('user', JSON.stringify(data?.user));
-        console.log(sessionStorage);
+        setUser(data?.user);
+        enqueueSnackbar(data?.message, { variant: 'success' });
       }
     } catch (error) {
-      console.log('Error in signing up: ', error.message);
+      console.log('Error in signing up: ', error);
+      if (error?.status === 400 || error?.status === 404) {
+        return enqueueSnackbar(error?.response?.data?.message, {
+          variant: 'error'
+        });
+      }
+      return enqueueSnackbar('Sign up failed!', { variant: 'error' });
     }
   };
 
@@ -121,10 +128,7 @@ const SignUp = () => {
             <hr className='w-1/2 border-black' />
           </div>
 
-          <button className='btn-dark flex items-center justify-center gap-4 w-[90%] center'>
-            <img src={GoogleIcon} alt='google-icon' className='w-5' />
-            Continue with Google
-          </button>
+          <GoogleAuthButton />
 
           <p className='text-center mt-6 text-dark-grey text-xl'>
             Already a member?{' '}
