@@ -133,7 +133,7 @@ const SignUp = () => {
           <p className='text-center mt-6 text-dark-grey text-xl'>
             Already a member?{' '}
             <Link to='/sign-in' className='underline text-black text-xl ml-1'>
-              Sign In here!
+              Sign In here! 
             </Link>
           </p>
         </form>
